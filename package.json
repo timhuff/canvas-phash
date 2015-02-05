@@ -1,0 +1,16 @@
+{
+  "name": "canvas-phash",
+  "version": "1.0.0",
+  "description": "A Canvas-based pHash Implementation",
+  "main": "index.js",
+  "dependencies": {
+    "bluebird": "^2.9.6",
+    "canvas": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
