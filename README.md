@@ -8,7 +8,7 @@ Block Mean Value Based Image Perceptual Hashing](http://ieeexplore.ieee.org/xpl/
 I found the [phash](https://www.npmjs.com/package/phash) package to be a little error prone with respect to file I/O. This package, while the API is very similar, is different in some key ways.
 
 - `phash` binds directly to the [pHash library](http://www.phash.org/). `canvas-phash` is a direct implementation, written in coffeescript, using [canvas](https://www.npmjs.com/package/canvas).
-- `phash` is callback-based while `canvas-phash` is promise-based (specifically, it uses [bluebird] for promise management).
+- `phash` is callback-based while `canvas-phash` is promise-based (specifically, it uses [bluebird](https://github.com/petkaantonov/bluebird) for promise management).
 - `phash` generally takes longer to compute the hash of an image but is faster at finding the hamming distance between two hashes.
 - The hash output by `phash` is an integer, expressed as a string. The hash output by `canvas-phash` is a 128-byte `Buffer`.
 - Comparing the two libraries on the basis of the correlation between hamming distance and "perceived difference" had mixed results. `phash` was better at some things, `canvas-phash` was better at others.
@@ -20,7 +20,7 @@ I ran some preliminary tests to check the performance against `phash` and found 
 The time taken ranged from just under 75ms to 150ms. For my tests, it generally took `phash` about 1-2 times longer to compute a hash as it took `canvas-phash`.
 
 ### Finding the Hamming Distance
-Typical time taken ranged from 0.2ms to 0.3ms. For my tests, it generally took `canvas-phash` about 2-3 times longer to find the hamming distance of two hashes. When comparing against a large collection of images, this is potentially significant. That being said, this library has not been optimized.
+Typical time taken ranged from 0.2ms to 0.3ms. For my tests, it generally took `canvas-phash` about 2-3 times longer to find the hamming distance of two hashes. When comparing against a large collection of images, this is potentially significant. That being said, this library has not been optimized. Also, the actual hash created is 128 bytes long and takes up about 2-3 times more space.
 
 ## Installation
 In order to use this library, it will be necessary to follow the installation instructions found in the [canvas](https://www.npmjs.com/package/canvas) package.
@@ -33,7 +33,7 @@ In order to use this library, it will be necessary to follow the installation in
 ## Example Usage
 
 ```coffee
-phash = require './index'
+phash = require 'canvas-phash'
 
 Promise = require 'bluebird'
 Promise.all([
@@ -43,4 +43,4 @@ Promise.all([
 .spread (hash1, hash2)->
 	dist = phash.getHammingDistance hash1, hash2
 ```
-In the following example, Promise.all is used to make the code readable. The typical use-case would be to compute the hash of a single image via `phash.getImageHash('image.jpg').then (hash)->` and compare that against a list of pre-existing hashes for close matches.
+In the previous example, Promise.all is used to make the code readable. `require`ing `bluebird` is not necessary to use this package. The typical use-case would be to compute the hash of a single image via `phash.getImageHash('image.jpg').then (hash)->` and compare that against a list of pre-existing hashes for close matches.
