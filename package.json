@@ -1,6 +1,6 @@
 {
   "name": "canvas-phash",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Canvas-based pHash Implementation",
   "main": "index.js",
   "dependencies": {
@@ -10,6 +10,10 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timhuff/canvas-phash"
   },
   "author": "",
   "license": "ISC"
