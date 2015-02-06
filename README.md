@@ -29,6 +29,7 @@ In order to use this library, it will be necessary to follow the installation in
 - `getImageHash` - Accepts 1 parameter, the path of the image or an instance of Canvas.Image. Returns a promise with eventual value equal to the "Block Mean Value Based" pHash.
 - `getHammingDistance` - Accepts 2 parameters, two instances of `Buffer` of length 128 (this is what is returned from `getImageHash`)
 - `getSHA256` - This computes the SHA256 hash of the pixel data. The only parameter is setup like that of `getImageHash`. This is useful for fast checks of exact matches. Ignores metadata.
+- `readImage` - Reads an image at the specified path and returns a Canvas.Image object.
 
 ## Example Usage
 (Another example exists in the repo)

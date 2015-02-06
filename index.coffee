@@ -22,6 +22,8 @@ getImageFromPath = (path)->
 		img
 
 imageHash =
+	readImage: getImageFromPath
+
 	getSHA256: (path)->
 		if path instanceof Image
 			canvasImage = Promise.resolve path
