@@ -26,11 +26,12 @@ Typical time taken ranged from 0.2ms to 0.3ms. For my tests, it generally took `
 In order to use this library, it will be necessary to follow the installation instructions found in the [canvas](https://www.npmjs.com/package/canvas) package.
 
 ## API
-- `getImageHash` - Accepts 1 parameter, the path of the image. Returns a promise with eventual value equal to the "Block Mean Value Based" pHash.
+- `getImageHash` - Accepts 1 parameter, the path of the image or an instance of Canvas.Image. Returns a promise with eventual value equal to the "Block Mean Value Based" pHash.
 - `getHammingDistance` - Accepts 2 parameters, two instances of `Buffer` of length 128 (this is what is returned from `getImageHash`)
-- `getSHA256` - This computes the SHA256 hash of the pixel data. This is useful for fast checks of exact matches. Ignores metadata.
+- `getSHA256` - This computes the SHA256 hash of the pixel data. The only parameter is setup like that of `getImageHash`. This is useful for fast checks of exact matches. Ignores metadata.
 
 ## Example Usage
+(Another example exists in the repo)
 
 ```coffee
 phash = require 'canvas-phash'
@@ -38,7 +39,7 @@ phash = require 'canvas-phash'
 Promise = require 'bluebird'
 Promise.all([
 	phash.getImageHash 'image.jpg'
-	phash.getImageHash 'image2.png'
+	phash.getImageHash instanceOfCanvasImage
 ])
 .spread (hash1, hash2)->
 	dist = phash.getHammingDistance hash1, hash2

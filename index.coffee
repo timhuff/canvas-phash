@@ -13,29 +13,41 @@ bitCount = (i)->
 	i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
 	return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
 
+getImageFromPath = (path)->
+	read path
+	.then (imageSrc)->
+		img = new Image
+		img.dataMode = Image.MODE_IMAGE
+		img.src = imageSrc
+		img
 
 imageHash =
-	getSHA256: (path)-> new Promise (resolve, reject)->
-		img = new Image
-		img.dataMode = Image.MODE_IMAGE
-		read path
-		.then (imageSrc)->
+	getSHA256: (path)->
+		if path instanceof Image
+			canvasImage = Promise.resolve path
+		else
+			canvasImage = getImageFromPath path
+		canvasImage.then (img)->
+			canvas = new Canvas img.width, img.height
+			ctx = canvas.getContext '2d'
+			ctx.drawImage img, 0, 0, img.width, img.height
+			pixelData = ctx.getImageData(0, 0, img.width, img.height).data
+			new Buffer pixelData
+		.then (pixelData)->
 			sha256 = crypto.createHash "sha256"
-			sha256.update imageSrc
+			sha256.update pixelData
 			hash = sha256.digest "base64"
-			resolve hash
+			hash
 
-	getImageHash: (path)->new Promise (resolve, reject)->
-		img = new Image
-		img.dataMode = Image.MODE_IMAGE
-		readImage = read path
+	getImageHash: (path)->
+		if path instanceof Image
+			canvasImage = Promise.resolve path
+		else
+			canvasImage = getImageFromPath path
 
-		canvas = new Canvas 256, 256
-		ctx = canvas.getContext '2d'
-
-		readImage.then (imageSrc)->
-			img.src = imageSrc
-
+		canvasImage.then (img)->
+			canvas = new Canvas 256, 256
+			ctx = canvas.getContext '2d'
 			ctx.scale 256 / img.width, 256 / img.height
 			ctx.drawImage img, 0, 0, img.width, img.height
 
@@ -85,7 +97,7 @@ imageHash =
 
 			buffer.write hexString, 0, 128, 'hex'
 
-			resolve buffer
+			buffer
 
 	getHammingDistance: (buffer1, buffer2)->
 		Buffer xor = new Buffer 128, 'utf8'
