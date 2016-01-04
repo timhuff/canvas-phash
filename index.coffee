@@ -1,7 +1,7 @@
 Promise = require 'bluebird'
 
-Canvas = require 'canvas'
-Image = Canvas.Image
+getPixels = require 'get-pixels'
+getPixels = Promise.promisify getPixels
 
 fs = require 'fs'
 read = Promise.promisify fs.readFile
@@ -14,49 +14,46 @@ bitCount = (i)->
 	return (((i + (i >>> 4)) & 0x0F0F0F0F) * 0x01010101) >>> 24;
 
 getImageFromPath = (path)->
-	read path
-	.then (imageSrc)->
-		img = new Image
-		img.dataMode = Image.MODE_IMAGE
-		img.src = imageSrc
-		img
+	getPixels path
+	.then (pixels)->
+		pixels.width = pixels.shape[0]
+		pixels.height = pixels.shape[1]
+		pixels.channels = pixels.shape[2]
+		pixels
 
-imageHash =
+getRegionPixels = (img, x, y, width, height)->
+	result = []
+	for j in [y..y+height-1]
+		for i in [x..x+width-1]
+			pixelNdx = j*img.width+i
+			result.push img.data[4*pixelNdx]
+			result.push img.data[4*pixelNdx+1]
+			result.push img.data[4*pixelNdx+2]
+			result.push img.data[4*pixelNdx+3]
+	result
+
+CanvasPhash =
 	readImage: getImageFromPath
 
 	getSHA256: (path)->
-		if path instanceof Image
-			canvasImage = Promise.resolve path
-		else
-			canvasImage = getImageFromPath path
-		canvasImage.then (img)->
-			canvas = new Canvas img.width, img.height
-			ctx = canvas.getContext '2d'
-			ctx.drawImage img, 0, 0, img.width, img.height
-			pixelData = ctx.getImageData(0, 0, img.width, img.height).data
-			new Buffer pixelData
-		.then (pixelData)->
+		getPixels path
+		.then (pixels)->
+			Promise.resolve new Buffer pixels.data
+		.then (pixelBuffer)->
 			sha256 = crypto.createHash "sha256"
-			sha256.update pixelData
+			sha256.update pixelBuffer
 			hash = sha256.digest "base64"
 			hash
 
 	getImageHash: (path)->
-		if path instanceof Image
-			canvasImage = Promise.resolve path
-		else
-			canvasImage = getImageFromPath path
-
-		canvasImage.then (img)->
-			canvas = new Canvas 256, 256
-			ctx = canvas.getContext '2d'
-			ctx.scale 256 / img.width, 256 / img.height
-			ctx.drawImage img, 0, 0, img.width, img.height
-
-			Mean = r:[], g:[], b:[], l:[], a:0
+		getImageFromPath path
+		.then (img)->
+			Mean = r:[], g:[], b:[], a:0
 			for blockRow in [0..15]
 				for blockCol in [0..15]
-					imageData = ctx.getImageData(16*blockCol, 16*blockRow, 16, 16).data
+					blockWidth = Math.floor img.width / 16
+					blockHeight = Math.floor img.height / 16
+					imageData = getRegionPixels img, blockWidth*blockCol, blockHeight*blockRow, blockWidth, blockHeight
 					avg = r:0, g:0, b:0
 					for pixelNdx in [0..255]
 						a = imageData[4*pixelNdx+3]
@@ -84,11 +81,11 @@ imageHash =
 			buffer = new Buffer 128, 'utf8'
 
 			hexString = ""
-			for pixelNdx in [0..255]
+			for blockNdx in [0..255]
 				char = 0
-				r = Mean.r[pixelNdx]
-				g = Mean.g[pixelNdx]
-				b = Mean.b[pixelNdx]
+				r = Mean.r[blockNdx]
+				g = Mean.g[blockNdx]
+				b = Mean.b[blockNdx]
 				if r >= Median.r
 					char |= 0x4
 				if g >= Median.g
@@ -111,4 +108,19 @@ imageHash =
 		hammingDistance
 
 
-module.exports = imageHash
+module.exports = CanvasPhash
+
+Promise.all [
+	CanvasPhash.getImageHash './failure.png'
+	CanvasPhash.getImageHash './failure2.png'
+]
+.spread (result, result2)->
+	console.log result+''
+	CanvasPhash.getHammingDistance result, result2
+.then (dist)->
+	console.log dist
+
+
+
+# sha256: XSTaHGWrLFp9F1DitplqnHxU+HWjuvkQZoHVBnE8U3g=
+# phash: wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
