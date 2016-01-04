@@ -36,8 +36,11 @@ CanvasPhash =
 	readImage: getImageFromPath
 
 	getSHA256: (path)->
-		getPixels path
-		.then (pixels)->
+		if typeof path == 'string'
+			pixelPromise = getImageFromPath path
+		else
+			pixelPromise = Promise.resolve path
+		pixelPromise.then (pixels)->
 			Promise.resolve new Buffer pixels.data
 		.then (pixelBuffer)->
 			sha256 = crypto.createHash "sha256"
@@ -46,8 +49,12 @@ CanvasPhash =
 			hash
 
 	getImageHash: (path)->
-		getImageFromPath path
-		.then (img)->
+		if typeof path == 'string'
+			pixelPromise = getImageFromPath path
+		else
+			pixelPromise = Promise.resolve path
+		
+		pixelPromise.then (img)->
 			Mean = r:[], g:[], b:[], a:0
 			for blockRow in [0..15]
 				for blockCol in [0..15]
