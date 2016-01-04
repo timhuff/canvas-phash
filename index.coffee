@@ -109,18 +109,3 @@ CanvasPhash =
 
 
 module.exports = CanvasPhash
-
-Promise.all [
-	CanvasPhash.getImageHash './failure.png'
-	CanvasPhash.getImageHash './failure2.png'
-]
-.spread (result, result2)->
-	console.log result+''
-	CanvasPhash.getHammingDistance result, result2
-.then (dist)->
-	console.log dist
-
-
-
-# sha256: XSTaHGWrLFp9F1DitplqnHxU+HWjuvkQZoHVBnE8U3g=
-# phash: wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
