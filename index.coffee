@@ -53,16 +53,16 @@ CanvasPhash =
 			pixelPromise = getImageFromPath path
 		else
 			pixelPromise = Promise.resolve path
-		
+
 		pixelPromise.then (img)->
 			Mean = r:[], g:[], b:[], a:0
-			for blockRow in [0..15]
-				for blockCol in [0..15]
-					blockWidth = Math.floor img.width / 16
-					blockHeight = Math.floor img.height / 16
+			for blockRow in [0..3]
+				for blockCol in [0..3]
+					blockWidth = Math.floor img.width / 4
+					blockHeight = Math.floor img.height / 4
 					imageData = getRegionPixels img, blockWidth*blockCol, blockHeight*blockRow, blockWidth, blockHeight
 					avg = r:0, g:0, b:0
-					for pixelNdx in [0..255]
+					for pixelNdx in [0..15]
 						a = imageData[4*pixelNdx+3]
 						if a == 0
 							r = 0xff
@@ -85,10 +85,10 @@ CanvasPhash =
 			for color, array of Median
 				Median[color] = getMedian Mean[color].slice 0
 
-			buffer = new Buffer 128, 'utf8'
+			buffer = new Buffer 8, 'utf8'
 
 			hexString = ""
-			for blockNdx in [0..255]
+			for blockNdx in [0..15]
 				char = 0
 				r = Mean.r[blockNdx]
 				g = Mean.g[blockNdx]
@@ -101,14 +101,14 @@ CanvasPhash =
 					char |= 0x1
 				hexString += char.toString(16)
 
-			buffer.write hexString, 0, 128, 'hex'
+			buffer.write hexString, 0, 8, 'hex'
 
 			buffer
 
 	getHammingDistance: (buffer1, buffer2)->
-		Buffer xor = new Buffer 128, 'utf8'
+		Buffer xor = new Buffer 8, 'utf8'
 		hammingDistance = 0
-		for n in [0..127] by 4
+		for n in [0..7] by 4
 			x = buffer1.readUInt32BE(n)
 			y = buffer2.readUInt32BE(n)
 			hammingDistance += bitCount(x^y)
