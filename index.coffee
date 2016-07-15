@@ -8,6 +8,12 @@ read = Promise.promisify fs.readFile
 
 crypto = require 'crypto'
 
+newBuffer = (size, encoding)->
+    try
+        return new Buffer(size, encoding)
+    catch e
+        return Buffer.alloc(size, encoding)
+
 bitCount = (i)->
 	i = i - ((i >>> 1) & 0x55555555);
 	i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
@@ -85,7 +91,7 @@ CanvasPhash =
 			for color, array of Median
 				Median[color] = getMedian Mean[color].slice 0
 
-			buffer = new Buffer 128, 'utf8'
+			buffer = newBuffer 128, 'utf8'
 
 			hexString = ""
 			for blockNdx in [0..255]
@@ -106,7 +112,7 @@ CanvasPhash =
 			buffer
 
 	getHammingDistance: (buffer1, buffer2)->
-		Buffer xor = new Buffer 128, 'utf8'
+		Buffer xor = newBuffer 128, 'utf8'
 		hammingDistance = 0
 		for n in [0..127] by 4
 			x = buffer1.readUInt32BE(n)
