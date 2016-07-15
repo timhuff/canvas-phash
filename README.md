@@ -1,7 +1,7 @@
 # canvas-phash
 
 ## Introduction
-This is an implementation of a perceptual image hash, ~~using Canvas~~ written in 100% javascript/coffeescript. Its two dependencies, `bluebird` and `get-pixels` have no dependencies of their own. The algorithm used is described in [
+This is an implementation of a perceptual image hash, ~~using Canvas~~ written in 100% javascript/coffeescript. The algorithm used is described in [
 Block Mean Value Based Image Perceptual Hashing](http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=4041692&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D4041692) and discussed in [this StackOverflow question](http://stackoverflow.com/questions/14377854/block-mean-value-hashing-method).
 
 ## Difference From `phash`
