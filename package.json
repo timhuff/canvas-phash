@@ -1,7 +1,7 @@
 {
   "name": "canvas-phash",
-  "version": "2.1.0",
-  "description": "A Canvas-based pHash Implementation",
+  "version": "2.1.1",
+  "description": "A Canvas-based pHash Implementation with nodejs 6 support",
   "main": "index.js",
   "dependencies": {
     "bluebird": "^2.9.6",
