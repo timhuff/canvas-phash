@@ -1,6 +1,6 @@
 # canvas-phash
 
-> Note: This project is no longer actively maintained. Updates have been made to this repo since the last npm package was published and the following README content needs to be updated. A new version might be published to npm when I have more time.
+> Note: This project is no longer actively maintained. The following README content needs to be updated (as it's been 8 years since this project was revised) but the general ideas hold.
 
 ## Introduction
 
