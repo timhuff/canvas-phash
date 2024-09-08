@@ -1,6 +1,6 @@
 # canvas-phash
 
-> Note: This project is no longer actively maintained. The following README content needs to be updated (as it's been 8 years since this project was revised) but the general ideas hold.
+> Note: This project is no longer actively maintained. The following README content needs to be updated (as it's been 8 years since this project was revised) but the general ideas hold. I've removed bluebird as a dependency, which might break backwards compatibility for some use-cases. If you're updating to v3 from v2, that should be the only breaking change.
 
 ## Introduction
 
