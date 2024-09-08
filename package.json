@@ -4,17 +4,18 @@
   "description": "A Canvas-based pHash Implementation with nodejs 6 support",
   "main": "index.js",
   "dependencies": {
-    "bluebird": "^2.9.6",
-    "get-pixels": "^3.2.3"
+    "get-pixels": "^3.3.3"
   },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/timhuff/canvas-phash"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
