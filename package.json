@@ -1,6 +1,6 @@
 {
   "name": "canvas-phash",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A Canvas-based pHash Implementation with nodejs 6 support",
   "main": "index.js",
   "dependencies": {
